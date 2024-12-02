@@ -15,16 +15,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-// Публичные маршруты
-Route::get('/movies', [MovieController::class, 'index']); // Просмотр всех фильмов
-Route::get('/movies/{id}', [MovieController::class, 'show']); // Просмотр конкретного фильма
-Route::get('/genres', [GenreController::class, 'index']); // Просмотр всех жанров
-Route::get('/genres/{id}', [GenreController::class, 'show']); // Просмотр конкретного жанра
-Route::get('/actors', [ActorController::class, 'index']); // Просмотр всех актёров
-Route::get('/actors/{id}', [ActorController::class, 'show']); // Просмотр конкретного актёра
-Route::get('/studios', [StudioController::class, 'index']); // Просмотр всех студий
-Route::get('/studios/{id}', [StudioController::class, 'show']); // Просмотр конкретной студии
-
 // Защищённые маршруты
 Route::middleware('auth:sanctum')->group(function () {
     // Пользователи
@@ -41,8 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/movies/favorites', [MovieController::class, 'favorites']); // Просмотр избранного
     Route::delete('/movies/{id}/favorite', [MovieController::class, 'removeFromFavorites']);
     // Отзывы
-    Route::apiResource('/rating', RatingController::class);
-
+    Route::post('/ratings', [RatingController::class, 'addRating']);
+    Route::delete('/ratings', [RatingController::class, 'deleteRating']);
     // Актёры
     Route::post('/actors', [ActorController::class, 'store']);
     Route::put('/actors/{id}', [ActorController::class, 'update']);
@@ -59,22 +49,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/genres/{id}', [GenreController::class, 'destroy']);
 });
 
-
-
-
-
-
-
-
-    // Студии
-    Route::apiResource('/studios', StudioController::class);
-    Route::prefix('studios')->group(function () {
-        Route::get('/', [StudioController::class, 'index']);          // Просмотр всех студий
-        Route::get('/{id}', [StudioController::class, 'show']);       // Просмотр конкретной студии
-
-    });
-
-    // Жанры
-    Route::apiResource('/genres', GenreController::class);
-    Route::get('/genres', [GenreController::class, 'index']);
-    Route::get('/genres/{id}', [GenreController::class, 'show']);
+// Публичные маршруты
+Route::get('/movies', [MovieController::class, 'index']); // Просмотр всех фильмов
+Route::get('/movies/{id}', [MovieController::class, 'show']); // Просмотр конкретного фильма
+Route::get('/genres', [GenreController::class, 'index']); // Просмотр всех жанров
+Route::get('/genres/{id}', [GenreController::class, 'show']); // Просмотр конкретного жанра
+Route::get('/actors', [ActorController::class, 'index']); // Просмотр всех актёров
+Route::get('/actors/{id}', [ActorController::class, 'show']); // Просмотр конкретного актёра
+Route::get('/studios', [StudioController::class, 'index']); // Просмотр всех студий
+Route::get('/studios/{id}', [StudioController::class, 'show']); // Просмотр конкретной студии
+Route::apiResource('/rating', RatingController::class); // Отзыв

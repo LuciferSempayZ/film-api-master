@@ -30,11 +30,61 @@ class RatingController extends Controller
     /**
      * Создать новый отзыв
      */
-    public function store(RatingRequest $request) {
-        $rating = Rating::create($request->validated());
-        return response()->json(['message' => 'Отзыв успешно добавлен', 'rating' => $rating], 201);
-    }
+    public function addRating(Request $request)
+    {
+        // Валидация данных
+        $validated = $request->validate([
+            'movies_id' => 'required|exists:movies,id',
+            'rating' => 'required|numeric|min:0|max:5',
+            'review_text' => 'nullable|string|max:1000', // Отзыв не обязателен, максимум 1000 символов
+        ]);
 
+        // Получение текущего пользователя
+        $user = $request->user();
+
+        // Создание или обновление рейтинга
+        $rating = Rating::updateOrCreate(
+            ['movies_id' => $validated['movies_id'], 'users_id' => $user->id],
+            [
+                'rating' => $validated['rating'],
+                'review_text' => $validated['review_text'] ?? null, // Сохраняем отзыв, если он предоставлен
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Рейтинг и отзыв успешно добавлены',
+            'rating' => $rating,
+        ], 200);
+    }
+    /**
+     * Удалить отзыв
+     */
+    public function deleteRating(Request $request)
+    {
+        $validated = $request->validate([
+            'movies_id' => 'required|exists:movies,id',
+        ]);
+
+        // Получение текущего пользователя
+        $user = $request->user();
+
+        // Попытка найти и удалить рейтинг
+        $rating = Rating::where('movies_id', $validated['movies_id'])
+            ->where('users_id', $user->id)
+            ->first();
+
+        if (!$rating) {
+            return response()->json([
+                'message' => 'Рейтинг или отзыв не найден',
+            ], 404);
+        }
+
+        $rating->delete();
+
+        return response()->json([
+            'message' => 'Рейтинг и отзыв успешно удалены',
+        ], 200);
+    }
     /**
      * Обновить существующий отзыв
      */
