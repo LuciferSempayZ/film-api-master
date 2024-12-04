@@ -13,7 +13,7 @@ class Movie extends Model
         'title', 'release_year', 'duration', 'description', 'photo', 'studio_id', 'age_rating_id',
     ];
 
-    public function Genre()
+    public function genres()
     {
         return $this->belongsToMany(Genre::class, 'movie_genres'); // Указываем промежуточную таблицу movie_genres
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ActorCreateRequest;
 use App\Http\Requests\ActorRequest;  // Включаем запрос на валидацию
 use App\Models\Actor;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class ActorController extends Controller
     }
 
     // Добавление нового актера
-    public function store(ActorRequest $request)
+    public function store(ActorCreateRequest $request)
     {
         $data = $request->validated();
 

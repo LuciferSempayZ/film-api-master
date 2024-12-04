@@ -18,11 +18,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 // Защищённые маршруты
 Route::middleware('auth:sanctum')->group(function () {
     // Пользователи
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/{id}', [UserController::class, 'show']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
+// Получить данные текущего пользователя
+    Route::get('/user', [UserController::class, 'show']);
+
+// Обновить данные текущего пользователя
+    Route::post('/user/profile', [UserController::class, 'updateProfile']);
     // Фильмы
     Route::post('/movies', [MovieController::class, 'store']);
     Route::put('/movies/{id}', [MovieController::class, 'update']);
@@ -35,9 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/ratings', [RatingController::class, 'deleteRating']);
     // Актёры
     Route::post('/actors', [ActorController::class, 'store']);
-    Route::put('/actors/{id}', [ActorController::class, 'update']);
+    Route::post('/actors/update/{id}', [ActorController::class, 'update']);
     Route::delete('/actors/{id}', [ActorController::class, 'destroy']);
-
     // Студии
     Route::post('/studios', [StudioController::class, 'store']);
     Route::put('/studios/{id}', [StudioController::class, 'update']);
