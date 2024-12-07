@@ -4,12 +4,12 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RatingRequest extends FormRequest
+class RatingUpdateRequest extends FormRequest
 {
     public function rules() {
         return [
-            'movies_id' => 'required|exists:movies,id',
-            'rating' => 'required|numeric|min:0|max:10|regex:/^\d(\.\d{1})?$/',
+            'movies_id' => 'nullable|exists:movies,id',
+            'rating' => 'required|numeric|min:0|max:10|regex:/^\d(\.\d{1})?$/',  // Разрешаем числа с плавающей запятой до 1 знака после запятой
             'review_text' => 'nullable|string|max:1000',
         ];
     }

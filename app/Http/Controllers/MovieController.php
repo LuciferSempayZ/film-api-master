@@ -47,33 +47,42 @@ class MovieController extends Controller
     /**
      * Обновить существующий фильм
      */
-    public function update(MovieRequest $request, $id) {
+    public function update(Request $request, $id)
+    {
+        // Найти фильм по ID
         $movie = Movie::find($id);
 
         if (!$movie) {
             return response()->json(['message' => 'Фильм не найден'], 404);
         }
 
-        $data = $request->validated();
+        // Получить все данные из запроса
+        $data = $request->all();
 
-        // Загрузка нового изображения, если предоставлено
+        // Если передан файл изображения, обработать его
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('movies', 'public');
+            $data['photo'] = $request->file('photo')->store('movies/photos', 'public');
         }
 
+        // Обновление данных фильма
         $movie->update($data);
 
-        // Обновление связей с жанрами и актерами
+        // Обновление жанров, если переданы
         if ($request->has('genres')) {
             $movie->genres()->sync($request->input('genres'));
         }
 
+        // Обновление актёров, если переданы
         if ($request->has('actors')) {
             $movie->actors()->sync($request->input('actors'));
         }
 
-        return response()->json(['message' => 'Фильм успешно обновлен', 'movie' => $movie], 200);
+        return response()->json([
+            'message' => 'Фильм успешно обновлён',
+            'movie' => $movie->load(['genres', 'actors', 'studio', 'ageRating', 'rating']),
+        ], 200);
     }
+
 
     /**
      * Удалить фильм
